@@ -1,0 +1,8 @@
+{
+  "name": "FloraView Dagupan - 3D Flower Bouquet Studio & AR",
+  "description": "Experience bespoke 3D flower bouquet design, AR visualization, and artisanal floral delivery across Dagupan City, Pangasinan.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
