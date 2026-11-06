@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, Phone, Mail, MapPin, Package, Heart, Sparkles, Shield, ChevronRight, LogOut, CheckCircle2, Clock, Truck, Plus } from 'lucide-react';
+import { User, MapPin, Package, Heart, Sparkles, LogOut, Truck } from 'lucide-react';
 import { UserProfile, Order, CustomBouquetConfig } from '../types';
 
 interface ProfileScreenProps {
@@ -7,7 +7,6 @@ interface ProfileScreenProps {
   orders: Order[];
   onOpenAuth: () => void;
   onLogout: () => void;
-  onOpenAdmin: () => void;
   onOpenCustomBuilderWithConfig: (config: CustomBouquetConfig) => void;
 }
 
@@ -16,7 +15,6 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
   orders,
   onOpenAuth,
   onLogout,
-  onOpenAdmin,
   onOpenCustomBuilderWithConfig
 }) => {
   const [activeTab, setActiveTab] = useState<'orders' | 'saved' | 'addresses'>('orders');
@@ -69,11 +67,6 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
               <div>
                 <div className="flex items-center gap-2">
                   <h2 className="text-lg font-bold text-white">{user.name}</h2>
-                  {user.role === 'admin' && (
-                    <span className="px-2 py-0.5 rounded-md text-[10px] bg-amber-400 text-stone-950 font-bold uppercase">
-                      Admin
-                    </span>
-                  )}
                 </div>
 
                 <p className="text-xs text-rose-200/80">{user.email}</p>
@@ -95,17 +88,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
             </div>
           </div>
 
-          {/* Quick Admin switch button if user has admin privileges or wants to test admin */}
-          <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs">
-            <button
-              type="button"
-              onClick={onOpenAdmin}
-              className="text-amber-300 hover:text-amber-200 font-semibold flex items-center gap-1 transition-colors"
-            >
-              <Shield className="w-3.5 h-3.5" />
-              <span>Switch to Florist Admin Operations</span>
-            </button>
-
+          <div className="mt-4 pt-3 border-t border-white/10 flex justify-end text-xs">
             <button
               type="button"
               onClick={onLogout}
