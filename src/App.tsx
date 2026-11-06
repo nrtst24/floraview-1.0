@@ -8,7 +8,6 @@ import { CustomBouquetBuilder } from './components/CustomBouquetBuilder';
 import { CartScreen } from './components/CartScreen';
 import { CheckoutScreen } from './components/CheckoutScreen';
 import { ProfileScreen } from './components/ProfileScreen';
-import { AdminDashboard } from './components/AdminDashboard';
 import { BouquetDetailModal } from './components/BouquetDetailModal';
 import { ARViewModal } from './components/ARViewModal';
 import { AuthModal } from './components/AuthModal';
@@ -20,7 +19,7 @@ export default function App() {
   // Splash Screen State
   const [showSplash, setShowSplash] = useState<boolean>(true);
 
-  // Active Tab: 'home' | 'shops' | 'builder' | 'cart' | 'checkout' | 'profile' | 'admin'
+  // Active Tab: customer-facing screens only
   const [currentTab, setCurrentTab] = useState<string>('home');
 
   // Dagupan Location
@@ -37,7 +36,7 @@ export default function App() {
   } | null>(null);
 
   const [isAuthOpen, setIsAuthOpen] = useState<boolean>(false);
-  const [authMode, setAuthMode] = useState<'login' | 'register' | 'admin'>('login');
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
 
   // User Profile
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(INITIAL_USER);
@@ -181,10 +180,6 @@ export default function App() {
     }
   };
 
-  const handleUpdateOrderStatus = (orderId: string, newStatus: Order['status']) => {
-    setOrders(prev => prev.map(o => (o.id === orderId ? { ...o, status: newStatus } : o)));
-  };
-
   const totalCartCount = cartItems.reduce((s, i) => s + i.quantity, 0);
 
   return (
@@ -197,9 +192,7 @@ export default function App() {
       {/* Main App Layout */}
       {!showSplash && (
         <>
-          {/* Header (hidden in admin mode which has its own toolbar) */}
-          {currentTab !== 'admin' && (
-            <MobileTopHeader
+          <MobileTopHeader
               currentTab={currentTab}
               onSelectTab={setCurrentTab}
               cartCount={totalCartCount}
@@ -210,8 +203,7 @@ export default function App() {
               }}
               selectedBarangay={selectedBarangay}
               onSelectBarangay={setSelectedBarangay}
-            />
-          )}
+          />
 
           {/* Main Views Container */}
           <main className="flex-1">
@@ -293,26 +285,16 @@ export default function App() {
                   setIsAuthOpen(true);
                 }}
                 onLogout={() => setCurrentUser(null)}
-                onOpenAdmin={() => setCurrentTab('admin')}
                 onOpenCustomBuilderWithConfig={config => {
                   setBuilderPrefillStemId(undefined);
                   setCurrentTab('builder');
                 }}
               />
             )}
-
-            {/* FLORIST ADMIN PORTAL */}
-            {currentTab === 'admin' && (
-              <AdminDashboard
-                orders={orders}
-                onUpdateOrderStatus={handleUpdateOrderStatus}
-                onExitAdmin={() => setCurrentTab('home')}
-              />
-            )}
           </main>
 
-          {/* Bottom Thumb Navigation (hidden on admin view and checkout to avoid distraction) */}
-          {currentTab !== 'admin' && currentTab !== 'checkout' && (
+          {/* Bottom customer navigation */}
+          {currentTab !== 'checkout' && (
             <MobileBottomNav
               currentTab={currentTab}
               onSelectTab={setCurrentTab}
@@ -351,9 +333,6 @@ export default function App() {
             initialMode={authMode}
             onLoginSuccess={user => {
               setCurrentUser(user);
-              if (user.role === 'admin') {
-                setCurrentTab('admin');
-              }
             }}
           />
         </>
